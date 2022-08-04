@@ -9,31 +9,58 @@ import SkeletonContents from "../components/SkeletonContents";
 import Contents from "../components/Contents";
 import Footer from "../components/Footer";
 
+function getMoviesByKeyword(page: number, keyword: string) {
+     return axios
+      .get(
+        `https://api.themoviedb.org/3/search/movie?api_key=${
+          process.env.REACT_APP_API_KEY
+        }&language=ko&page=${page}&query=${keyword}`
+      )
+}
+
+function 
+
 const SearchResult = () => {
   const { keyword } = useParams();
 
   const [loading, setLoading] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
   const [page, setPage] = useState(1);
-
-  const morePage = () => {
-    setLoading(true);
-    axios
-      .get(
-        `https://api.themoviedb.org/3/search/movie?api_key=${
-          process.env.REACT_APP_API_KEY
-        }&language=ko&page=${page + 1}&query=${keyword}`
-      )
-      .then((res) =>
-        setSearchResult((searchResult) => searchResult.concat(res.data.results))
-      )
+  
+  const handleMorePageButtonClick = () => {
+    getMoviesByKeyword(page + 1, keyword)
+      .then((response) => {setSearchResult((searchResult) => searchResult.concat(response.data.results))})
       .then(() => {
         setPage((page) => page + 1);
         setLoading(false);
       })
-      .catch((err) => console.log(err));
   };
 
+//   const morePage = () => {
+//     setLoading(true);
+//     axios
+//       .get(
+//         `https://api.themoviedb.org/3/search/movie?api_key=${
+//           process.env.REACT_APP_API_KEY
+//         }&language=ko&page=${page + 1}&query=${keyword}`
+//       )
+//       .then((res) =>
+//         setSearchResult((searchResult) => searchResult.concat(res.data.results))
+//       )
+//       .then(() => {
+//         setPage((page) => page + 1);
+//         setLoading(false);
+//       })
+//       .catch((err) => console.log(err));
+//   };
+
+  // 키워드가 바뀔때마다 새로운 검색을 한다
+  // ~~ 하는 
+  // 키워드가 바뀔때마다 새로운 검색을 한다ㄴㅕㅅ
+  // 키워드가 바뀔때마다 새로운 검색을
+  // 키워드가 바뀔때마다 새로운 검색을 한다
+  // use-search-requester-on-keyword-change
+  // use-xxx
   useEffect(() => {
     setLoading(true);
     setPage(1);
@@ -68,7 +95,7 @@ const SearchResult = () => {
       {loading ? <SkeletonContents /> : <Contents data={searchResult} />}
       {searchResult.length >= 20 * page ? (
         <ButtonContainer>
-          <Button name="더보기" padding="10px 70px" onClick={morePage} />
+          <Button name="더보기" padding="10px 70px" onClick={handleMorePageButtonClick} />
         </ButtonContainer>
       ) : null}
       <Footer />
